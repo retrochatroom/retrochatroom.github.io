@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Admin functionality
-    function promoteToAdmin(userId) {
+    function promoteToAdmin(1) {
         if (!admins.includes(userId)) {
             admins.push(userId);
             localStorage.setItem('admins', JSON.stringify(admins));
