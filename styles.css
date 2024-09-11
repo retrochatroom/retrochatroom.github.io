@@ -155,6 +155,28 @@ button:hover {
     border-radius: 5px;
 }
 
+/* Admin Panel Styles */
+#admin-users, #admin-topics {
+    background-color: var(--input-background);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+}
+
+#admin-user-list li, #admin-topic-list li {
+    background-color: var(--background-color);
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#admin-user-list button, #admin-topic-list button {
+    margin-left: 0.5rem;
+}
+
 #topic-list {
     list-style-type: none;
     margin-bottom: 1rem;
