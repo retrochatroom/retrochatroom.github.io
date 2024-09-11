@@ -3,6 +3,7 @@ let users = JSON.parse(localStorage.getItem('users')) || [];
 let messages = JSON.parse(localStorage.getItem('messages')) || [];
 let topics = JSON.parse(localStorage.getItem('topics')) || [];
 let threads = JSON.parse(localStorage.getItem('threads')) || [];
+let admins = JSON.parse(localStorage.getItem('admins')) || [];
 
 let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
 
@@ -12,6 +13,7 @@ function saveData() {
     localStorage.setItem('messages', JSON.stringify(messages));
     localStorage.setItem('topics', JSON.stringify(topics));
     localStorage.setItem('threads', JSON.stringify(threads));
+    localStorage.setItem('admins', JSON.stringify(admins));
 }
 
 // Helper function to generate a random avatar
@@ -19,7 +21,23 @@ function generateAvatar(username) {
     return `https://avatars.dicebear.com/api/initials/${username}.svg`;
 }
 
+// Function to check if a user is an admin
+function isAdmin(userId) {
+    return admins.includes(userId);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Logout functionality
+    const logoutBtn = document.querySelector('#logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        });
+    }
+
     // Login form handling
     const loginForm = document.querySelector('#login-form form');
     if (loginForm) {
@@ -33,7 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentUser = user;
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 alert('Login successful!');
-                window.location.href = 'index.html';
+                if (isAdmin(user.id)) {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
             } else {
                 alert('Invalid username or password');
             }
@@ -66,7 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 email, 
                 password, 
                 joinDate: new Date().toISOString(),
-                avatar: generateAvatar(username)
+                avatar: generateAvatar(username),
+                isAdmin: false
             };
             users.push(newUser);
             saveData();
@@ -277,5 +300,123 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Email:</strong> ${user.email}</p>
             <p><strong>Join Date:</strong> ${new Date(user.joinDate).toLocaleDateString()}</p>
         `;
+    }
+
+    // Admin functionality
+    function promoteToAdmin(userId) {
+        if (!admins.includes(userId)) {
+            admins.push(userId);
+            localStorage.setItem('admins', JSON.stringify(admins));
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.isAdmin = true;
+                saveData();
+            }
+        }
+    }
+
+    function demoteFromAdmin(userId) {
+        const index = admins.indexOf(userId);
+        if (index > -1) {
+            admins.splice(index, 1);
+            localStorage.setItem('admins', JSON.stringify(admins));
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.isAdmin = false;
+                saveData();
+            }
+        }
+    }
+
+    // Admin panel functionality
+    const adminUserList = document.querySelector('#admin-user-list');
+    const adminTopicList = document.querySelector('#admin-topic-list');
+
+    if (adminUserList && adminTopicList) {
+        if (currentUser && isAdmin(currentUser.id)) {
+            loadAdminPanel();
+        } else {
+            window.location.href = 'index.html'; // Redirect non-admins
+        }
+    }
+
+    function loadAdminPanel() {
+        // Load users
+        adminUserList.innerHTML = '';
+        users.forEach(user => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                ${user.username} (${user.email}) 
+                <button onclick="toggleAdminStatus(${user.id})">${isAdmin(user.id) ? 'Remove Admin' : 'Make Admin'}</button>
+                <button onclick="deleteUser(${user.id})">Delete User</button>
+            `;
+            adminUserList.appendChild(li);
+        });
+
+        // Load topics
+        adminTopicList.innerHTML = '';
+        topics.forEach(topic => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                ${topic.title} (by ${topic.username}) 
+                <button onclick="deleteTopic(${topic.id})">Delete Topic</button>
+            `;
+            adminTopicList.appendChild(li);
+        });
+    }
+
+    // These functions need to be global for the onclick attributes to work
+    window.toggleAdminStatus = function(userId) {
+        if (isAdmin(userId)) {
+            demoteFromAdmin(userId);
+        } else {
+            promoteToAdmin(userId);
+        }
+        loadAdminPanel();
+    }
+
+    window.deleteUser = function(userId) {
+        users = users.filter(user => user.id !== userId);
+        saveData();
+        loadAdminPanel();
+    }
+
+    window.deleteTopic = function(topicId) {
+        topics = topics.filter(topic => topic.id !== topicId);
+        saveData();
+        loadAdminPanel();
+    }
+
+    // Home page functionality
+    const featuredTopics = document.querySelector('#featured-topics');
+    const activityList = document.querySelector('#activity-list');
+
+    if (featuredTopics && activityList) {
+        loadFeaturedTopics();
+        loadRecentActivity();
+    }
+
+    function loadFeaturedTopics() {
+        featuredTopics.innerHTML = '';
+        const recentTopics = topics.slice(-3).reverse();
+        recentTopics.forEach(topic => {
+            const topicElement = document.createElement('div');
+            topicElement.className = 'featured-topic';
+            topicElement.innerHTML = `
+                <h3><a href="thread.html?topicId=${topic.id}">${topic.title}</a></h3>
+                <p>by ${topic.username}</p>
+            `;
+            featuredTopics.appendChild(topicElement);
+        });
+    }
+
+    function loadRecentActivity() {
+        activityList.innerHTML = '';
+        const recentMessages = messages.slice(-5).reverse();
+        recentMessages.forEach(message => {
+            const activityElement = document.createElement('li');
+            activityElement.innerHTML = `${message.username} posted a message: "${message.content.substring(0, 30)}..."`;
+            activityList.appendChild(activityElement);
+        });
     }
 });
