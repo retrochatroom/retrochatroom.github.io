@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Chat Room</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.0">
+</head>
+<body>
+    <div class="container">
+        <div id="chat-room">
+            <div id="chat-header">
+                <h2>Retro Chat Room</h2>
+                <div>Users Online: <span id="online-users-count">0</span></div>
+                <button id="logout">Log out</button>
+            </div>
+            <div id="chat-messages"></div>
+            <div id="chat-input">
+                <input type="text" id="message" placeholder="Type your message...">
+                <div id="char-counter">0/2000</div>
+                <button id="send-message">Send</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
