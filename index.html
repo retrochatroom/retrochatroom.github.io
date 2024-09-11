@@ -3,72 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Chat Room</title>
+    <title>Welcome to Retro Chat</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.0">
 </head>
 <body>
     <div class="container">
         <div id="login-screen">
             <h1>Welcome to Retro Chat</h1>
             <div id="login-area">
-                <input type="text" id="username" placeholder="Enter your username (max 18 characters)">
-                <div id="login-buttons">
-                    <button id="enter-chat">Enter Chat</button>
-                    <button id="show-admin-login">Admin Login</button>
-                </div>
-            </div>
-            <div id="admin-login-panel" style="display: none;">
-                <input type="text" id="admin-username" placeholder="Admin Username">
-                <input type="password" id="admin-password" placeholder="Admin Password">
-                <button id="admin-login">Login as Admin</button>
-            </div>
-        </div>
-        <div id="chat-room" style="display: none;">
-            <div id="chat-header">
-                <h2>Retro Chat Room</h2>
-                <div>Users Online: <span id="online-users-count">0</span></div>
-                <button id="logout">Logout</button>
-            </div>
-            <div id="chat-messages"></div>
-            <div id="chat-input">
-                <input type="text" id="message" placeholder="Type your message...">
-                <div id="char-counter">0/2000</div>
-                <button id="send-message">Send</button>
+                <input type="text" id="username" placeholder="Username">
+                <input type="password" id="password" placeholder="Password">
+                <button id="login-button">Login</button>
             </div>
         </div>
     </div>
-
-    <div id="admin-control-panel" style="display: none;">
-        <h2>Admin Control Panel</h2>
-        <div id="user-management">
-            <h3>User Management</h3>
-            <select id="user-list"></select>
-            <button id="promote-to-mod">Promote to Mod</button>
-            <button id="demote-to-user">Demote to User</button>
-        </div>
-        <div id="moderation-tools">
-            <h3>Moderation Tools</h3>
-            <button id="view-banned-users">View Banned Users</button>
-        </div>
-    </div>
-
-    <div id="banned-users-database" style="display: none;">
-        <h2>Banned Users Database</h2>
-        <table id="banned-users-table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Ban Length</th>
-                    <th>Banned By</th>
-                    <th>Ban Reason</th>
-                    <th>Ban End Date</th>
-                </tr>
-            </thead>
-            <tbody id="banned-users-list"></tbody>
-        </table>
-        <button id="back-to-admin-panel">Back to Admin Panel</button>
-    </div>
-
     <script src="script.js"></script>
 </body>
 </html>
